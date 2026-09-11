@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica JS</title>
+    <!--
+      ============================================================
+       RUNNER DE PRÁCTICA
+      ============================================================
+       - Abre este archivo en el navegador (doble clic o Live Server).
+       - Elige un archivo en la barra lateral: se carga en una página limpia
+         (así las variables de un archivo no chocan con las de otro).
+       - La salida de console.log aparece abajo y también en DevTools (F12).
+       - Para los archivos de 10-modulos usa Live Server (los módulos no
+         funcionan con file://).
+       - ¿Creaste un archivo nuevo? Agrégalo a la lista ARCHIVOS (más abajo)
+         o escribe su ruta en "Abrir ruta".
+    -->
+    <style>
+        :root {
+            --rn-bg: #f6f7f9;
+            --rn-panel: #ffffff;
+            --rn-borde: #e3e6ea;
+            --rn-texto: #1f2328;
+            --rn-suave: #6b7280;
+            --rn-acento: #d4a900;
+            --rn-acento-fondo: #fff8d6;
+            --rn-consola: #16181d;
+            --rn-consola-texto: #e6e6e6;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--rn-bg);
+            color: var(--rn-texto);
+        }
+        .rn-layout { display: grid; grid-template-columns: 290px 1fr; min-height: 100vh; }
+        .rn-sidebar {
+            background: var(--rn-panel);
+            border-right: 1px solid var(--rn-borde);
+            padding: 16px 12px;
+            overflow-y: auto;
+            max-height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        .rn-logo { display: flex; align-items: center; gap: 10px; margin: 0 4px 14px; }
+        .rn-logo b {
+            background: #f7df1e; color: #000; font-weight: 800; border-radius: 6px;
+            width: 34px; height: 34px; display: grid; place-items: center; font-size: 15px;
+        }
+        .rn-logo span { font-weight: 650; }
+        .rn-filtro {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--rn-borde);
+            border-radius: 8px; font: inherit; margin-bottom: 10px;
+        }
+        .rn-grupo { margin: 12px 0 4px; }
+        .rn-grupo h4 {
+            margin: 0 6px 4px; font-size: 11px; letter-spacing: .06em;
+            text-transform: uppercase; color: var(--rn-suave);
+        }
+        .rn-grupo a {
+            display: block; padding: 5px 8px; border-radius: 6px; color: inherit;
+            text-decoration: none; font-size: 13.5px; line-height: 1.35;
+        }
+        .rn-grupo a:hover { background: var(--rn-bg); }
+        .rn-grupo a.rn-activo { background: var(--rn-acento-fondo); font-weight: 600; box-shadow: inset 3px 0 0 var(--rn-acento); }
+        .rn-main { padding: 20px 24px 40px; min-width: 0; }
+        .rn-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .rn-barra h1 { font-size: 18px; margin: 0 auto 0 0; font-family: ui-monospace, Consolas, monospace; word-break: break-all; }
+        .rn-btn {
+            border: 1px solid var(--rn-borde); background: var(--rn-panel); border-radius: 8px;
+            padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; color: inherit;
+        }
+        .rn-btn:hover { border-color: #c5cad1; }
+        .rn-ruta { display: flex; gap: 6px; }
+        .rn-ruta input { padding: 6px 10px; border: 1px solid var(--rn-borde); border-radius: 8px; font: inherit; font-size: 13px; width: 220px; }
+        .rn-aviso {
+            background: #fff4e5; border: 1px solid #ffd8a8; color: #8a4b00;
+            border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px;
+        }
+        .rn-tarjeta {
+            background: var(--rn-panel); border: 1px solid var(--rn-borde); border-radius: 12px;
+            margin-bottom: 16px; overflow: hidden;
+        }
+        .rn-tarjeta > header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 14px; border-bottom: 1px solid var(--rn-borde); font-size: 12px;
+            color: var(--rn-suave); text-transform: uppercase; letter-spacing: .06em;
+        }
+        #app { padding: 16px; }
+        .rn-consola { background: var(--rn-consola); border-color: #2a2d34; }
+        .rn-consola > header { color: #9aa0a6; border-bottom-color: #2a2d34; }
+        .rn-consola > header .rn-btn { background: transparent; color: #cfd3d8; border-color: #3a3e46; padding: 3px 10px; }
+        #rn-salida {
+            margin: 0; padding: 10px 0; min-height: 120px; max-height: 65vh; overflow: auto;
+            font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13px;
+            color: var(--rn-consola-texto);
+        }
+        .rn-linea { padding: 3px 14px; white-space: pre-wrap; word-break: break-word; border-bottom: 1px solid #22252b; }
+        .rn-linea.rn-warn { background: #332b00; color: #ffe08a; }
+        .rn-linea.rn-error { background: #3a1216; color: #ff9a9a; }
+        .rn-linea.rn-info { color: #8ecbff; }
+        .rn-str { color: inherit; }
+        .rn-num { color: #b5a0ff; }
+        .rn-bool { color: #ff9ecb; }
+        .rn-nulo { color: #8b949e; }
+        .rn-fn { color: #7ee0b5; font-style: italic; }
+        .rn-tabla { border-collapse: collapse; margin: 4px 0; font-size: 12.5px; }
+        .rn-tabla th, .rn-tabla td { border: 1px solid #3a3e46; padding: 3px 8px; text-align: left; }
+        .rn-tabla th { background: #22252b; }
+        .rn-bienvenida { padding: 24px; line-height: 1.6; }
+        .rn-bienvenida code { background: var(--rn-bg); padding: 1px 6px; border-radius: 4px; }
+        @media (max-width: 760px) {
+            .rn-layout { grid-template-columns: 1fr; }
+            .rn-sidebar { position: static; max-height: 45vh; border-right: 0; border-bottom: 1px solid var(--rn-borde); }
+            .rn-main { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="rn-layout">
+        <nav class="rn-sidebar">
+            <div class="rn-logo"><b>JS</b><span>Práctica JavaScript</span></div>
+            <input class="rn-filtro" id="rn-filtro" placeholder="Filtrar archivos…" autocomplete="off">
+            <div id="rn-menu"></div>
+        </nav>
+
+        <main class="rn-main">
+            <div class="rn-barra">
+                <h1 id="rn-titulo">Elige un archivo</h1>
+                <button class="rn-btn" id="rn-anterior">← Anterior</button>
+                <button class="rn-btn" id="rn-siguiente">Siguiente →</button>
+                <button class="rn-btn" id="rn-recargar">↻ Recargar</button>
+                <form class="rn-ruta" id="rn-form-ruta">
+                    <input id="rn-input-ruta" placeholder="Abrir ruta: carpeta/archivo.js">
+                    <button class="rn-btn">Abrir</button>
+                </form>
+            </div>
+
+            <div id="rn-avisos"></div>
+
+            <section class="rn-tarjeta" id="rn-tarjeta-app" hidden>
+                <header><span>Resultado en la página (#app)</span></header>
+                <!-- Los archivos de 12-dom dibujan aquí -->
+                <div id="app"></div>
+            </section>
+
+            <section class="rn-tarjeta rn-consola">
+                <header>
+                    <span>Consola (también en F12 → Console)</span>
+                    <button class="rn-btn" id="rn-limpiar">Limpiar</button>
+                </header>
+                <div id="rn-salida"></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Todo el código del runner va dentro de esta función para NO crear variables
+        // globales que choquen con las de tus archivos de práctica.
+        (function () {
+            "use strict";
+
+            // Lista de archivos (agrega aquí los que crees). Formato: "carpeta/archivo.js"
+            const ARCHIVOS = [
+                "app.js",
+                "01-tipos/01-variables.js",
+                "01-tipos/02-primitivos.js",
+                "01-tipos/03-constantes.js",
+                "01-tipos/04-tipado-dinamico.js",
+                "01-tipos/05-comentarios.js",
+                "01-tipos/06-objetos.js",
+                "01-tipos/07-arrays.js",
+                "01-tipos/08-funciones.js",
+                "01-tipos/09-argumentos.js",
+                "02-Dinamico/01-dinanismo.js",
+                "02-Dinamico/02-factory.js",
+                "02-Dinamico/03-consturctor.js",
+                "02-Dinamico/04-funciones-son-objetos.js",
+                "02-Dinamico/05-valores-vs-referencias.js",
+                "02-Dinamico/06-enumerar-propiedades.js",
+                "02-Dinamico/07-clonar-objetos.js",
+                "03-operadores/01-aritmeticos-y-asignacion.js",
+                "03-operadores/02-comparacion-e-igualdad.js",
+                "03-operadores/03-logicos-y-condicionales.js",
+                "04-control-de-flujo/01-if-else.js",
+                "04-control-de-flujo/02-switch.js",
+                "04-control-de-flujo/03-bucles.js",
+                "05-strings/01-template-literals.js",
+                "05-strings/02-metodos-de-string.js",
+                "05-strings/03-math-numeros-y-fechas.js",
+                "06-funciones/01-declaracion-vs-expresion.js",
+                "06-funciones/02-arrow-functions.js",
+                "06-funciones/03-parametros-default-y-rest.js",
+                "06-funciones/04-scope-y-closures.js",
+                "06-funciones/05-callbacks-y-orden-superior.js",
+                "06-funciones/06-this-call-apply-bind.js",
+                "06-funciones/07-manejo-de-errores.js",
+                "07-arrays/01-agregar-y-eliminar.js",
+                "07-arrays/02-buscar-elementos.js",
+                "07-arrays/03-map-filter-reduce.js",
+                "07-arrays/04-ordenar-combinar-convertir.js",
+                "07-arrays/05-inmutabilidad-estilo-react.js",
+                "08-es6-moderno/01-destructuring.js",
+                "08-es6-moderno/02-spread-y-rest.js",
+                "08-es6-moderno/03-shorthand-y-propiedades-computadas.js",
+                "09-clases/01-clases.js",
+                "09-clases/02-herencia-y-prototipos.js",
+                "10-modulos/main.js",
+                "11-asincronia/01-sincrono-vs-asincrono.js",
+                "11-asincronia/02-callbacks.js",
+                "11-asincronia/03-promesas.js",
+                "11-asincronia/04-async-await.js",
+                "11-asincronia/05-fetch-api.js",
+                "12-dom/01-seleccionar-y-modificar.js",
+                "12-dom/02-eventos.js",
+                "12-dom/03-crear-elementos.js",
+                "12-dom/04-mini-app-tareas.js",
+                "soluciones/01-tipos.js",
+                "soluciones/02-Dinamico.js",
+                "soluciones/03-operadores.js",
+                "soluciones/04-control-de-flujo.js",
+                "soluciones/05-strings.js",
+                "soluciones/06-funciones.js",
+                "soluciones/07-arrays.js",
+                "soluciones/08-es6-moderno.js",
+                "soluciones/09-clases.js",
+                "soluciones/10-modulos/main.js",
+                "soluciones/11-asincronia.js",
+                "soluciones/12-dom.js",
+            ];
+
+            const params = new URLSearchParams(location.search);
+            const actual = params.get("archivo");
+            const $ = (id) => document.getElementById(id);
+            const salida = $("rn-salida");
+
+            // ---------- Menú lateral ----------
+            function construirMenu(filtro = "") {
+                const grupos = {};
+                ARCHIVOS.filter((ruta) => ruta.toLowerCase().includes(filtro.toLowerCase())).forEach((ruta) => {
+                    const partes = ruta.split("/");
+                    const grupo = partes.length > 1 ? partes.slice(0, -1).join("/") : "raíz";
+                    (grupos[grupo] = grupos[grupo] || []).push(ruta);
+                });
+                const menu = $("rn-menu");
+                menu.replaceChildren();
+                Object.entries(grupos).forEach(([grupo, rutas]) => {
+                    const div = document.createElement("div");
+                    div.className = "rn-grupo";
+                    const h4 = document.createElement("h4");
+                    h4.textContent = grupo;
+                    div.append(h4);
+                    rutas.forEach((ruta) => {
+                        const a = document.createElement("a");
+                        a.href = "?archivo=" + encodeURIComponent(ruta);
+                        a.textContent = ruta.split("/").pop().replace(/\.js$/, "");
+                        a.title = ruta;
+                        if (ruta === actual) a.className = "rn-activo";
+                        div.append(a);
+                    });
+                    menu.append(div);
+                });
+                const activo = menu.querySelector(".rn-activo");
+                if (activo && !filtro) activo.scrollIntoView({ block: "center" });
+            }
+            construirMenu();
+            $("rn-filtro").addEventListener("input", (e) => construirMenu(e.target.value));
+
+            // ---------- Navegación ----------
+            const indice = ARCHIVOS.indexOf(actual);
+            const ir = (ruta) => { location.search = "?archivo=" + encodeURIComponent(ruta); };
+            $("rn-anterior").disabled = indice <= 0;
+            $("rn-siguiente").disabled = indice === -1 || indice >= ARCHIVOS.length - 1;
+            $("rn-anterior").addEventListener("click", () => ir(ARCHIVOS[indice - 1]));
+            $("rn-siguiente").addEventListener("click", () => ir(ARCHIVOS[indice + 1]));
+            $("rn-recargar").addEventListener("click", () => location.reload());
+            $("rn-limpiar").addEventListener("click", () => salida.replaceChildren());
+            $("rn-form-ruta").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const ruta = $("rn-input-ruta").value.trim().replace(/^\.?\//, "");
+                if (ruta) ir(ruta);
+            });
+
+            // ---------- Mostrar #app solo si un archivo dibuja algo ----------
+            const appDiv = $("app");
+            new MutationObserver(() => {
+                $("rn-tarjeta-app").hidden = appDiv.childNodes.length === 0;
+            }).observe(appDiv, { childList: true });
+
+            // ---------- Formatear valores como la consola del navegador ----------
+            function span(clase, texto) {
+                const s = document.createElement("span");
+                s.className = clase;
+                s.textContent = texto;
+                return s;
+            }
+
+            function aTexto(valor, nivel, vistos) {
+                if (valor === null) return "null";
+                const tipo = typeof valor;
+                if (tipo === "string") return nivel === 0 ? valor : JSON.stringify(valor);
+                if (tipo === "number" || tipo === "boolean") return String(valor);
+                if (tipo === "undefined") return "undefined";
+                if (tipo === "bigint") return valor + "n";
+                if (tipo === "symbol") return valor.toString();
+                if (tipo === "function") {
+                    const esClase = /^class\s/.test(Function.prototype.toString.call(valor));
+                    return esClase ? "class " + (valor.name || "(anónima)") : "ƒ " + (valor.name || "(anónima)") + "()";
+                }
+                if (vistos.has(valor)) return "[Circular]";
+                if (valor instanceof Error) return valor.name + ": " + valor.message;
+                if (valor instanceof Date) return isNaN(valor) ? "Invalid Date" : valor.toString();
+                if (valor instanceof RegExp) return String(valor);
+                if (typeof Promise !== "undefined" && valor instanceof Promise) return "Promise {…}";
+                if (typeof Node !== "undefined" && valor instanceof Node) {
+                    if (valor.nodeType !== 1) return valor.nodeName;
+                    let etiqueta = "<" + valor.tagName.toLowerCase();
+                    if (valor.id) etiqueta += ' id="' + valor.id + '"';
+                    if (valor.className && typeof valor.className === "string") etiqueta += ' class="' + valor.className + '"';
+                    return etiqueta + ">";
+                }
+                if (nivel > 3) return Array.isArray(valor) ? "[…]" : "{…}";
+                vistos.add(valor);
+                try {
+                    if (typeof NodeList !== "undefined" && (valor instanceof NodeList || valor instanceof HTMLCollection)) {
+                        return valor.constructor.name + "(" + valor.length + ") [" + Array.from(valor, (v) => aTexto(v, nivel + 1, vistos)).join(", ") + "]";
+                    }
+                    if (Array.isArray(valor)) {
+                        const items = [];
+                        let huecos = 0;
+                        const limite = Math.min(valor.length, 100);
+                        for (let i = 0; i < limite; i++) {
+                            if (!(i in valor)) { huecos++; continue; }
+                            if (huecos) { items.push("<" + huecos + " empty item" + (huecos > 1 ? "s" : "") + ">"); huecos = 0; }
+                            items.push(aTexto(valor[i], nivel + 1, vistos));
+                        }
+                        if (huecos) items.push("<" + huecos + " empty item" + (huecos > 1 ? "s" : "") + ">");
+                        if (valor.length > limite) items.push("… " + (valor.length - limite) + " más");
+                        return "(" + valor.length + ") [" + items.join(", ") + "]";
+                    }
+                    if (valor instanceof Map) {
+                        return "Map(" + valor.size + ") {" + Array.from(valor, ([k, v]) => aTexto(k, nivel + 1, vistos) + " => " + aTexto(v, nivel + 1, vistos)).join(", ") + "}";
+                    }
+                    if (valor instanceof Set) {
+                        return "Set(" + valor.size + ") {" + Array.from(valor, (v) => aTexto(v, nivel + 1, vistos)).join(", ") + "}";
+                    }
+                    const nombre = valor.constructor && valor.constructor !== Object ? valor.constructor.name + " " : "";
+                    const pares = Object.keys(valor).map((k) => {
+                        const llave = /^[A-Za-z_$][\w$]*$/.test(k) ? k : JSON.stringify(k);
+                        return llave + ": " + aTexto(valor[k], nivel + 1, vistos);
+                    });
+                    return nombre + "{" + (pares.length ? " " + pares.join(", ") + " " : "") + "}";
+                } finally {
+                    vistos.delete(valor);
+                }
+            }
+
+            function nodoValor(valor) {
+                const tipo = typeof valor;
+                if (tipo === "string") return span("rn-str", valor);
+                if (tipo === "number" || tipo === "bigint") return span("rn-num", aTexto(valor, 1, new WeakSet()));
+                if (tipo === "boolean") return span("rn-bool", String(valor));
+                if (valor === null || tipo === "undefined") return span("rn-nulo", String(valor));
+                if (tipo === "function") return span("rn-fn", aTexto(valor, 1, new WeakSet()));
+                return span("rn-str", aTexto(valor, 1, new WeakSet()));
+            }
+
+            function imprimir(clase, args) {
+                const linea = document.createElement("div");
+                linea.className = "rn-linea " + clase;
+                args.forEach((arg, i) => {
+                    if (i > 0) linea.append(" ");
+                    linea.append(nodoValor(arg));
+                });
+                const pegadoAbajo = salida.scrollTop + salida.clientHeight >= salida.scrollHeight - 20;
+                salida.append(linea);
+                if (pegadoAbajo) salida.scrollTop = salida.scrollHeight;
+            }
+
+            function imprimirTabla(datos) {
+                if (datos === null || typeof datos !== "object") return imprimir("", [datos]);
+                const filas = Object.entries(datos);
+                const columnas = [];
+                filas.forEach(([, fila]) => {
+                    if (fila && typeof fila === "object") Object.keys(fila).forEach((c) => { if (!columnas.includes(c)) columnas.push(c); });
+                });
+                const tabla = document.createElement("table");
+                tabla.className = "rn-tabla";
+                const cabecera = tabla.insertRow();
+                ["(índice)", ...(columnas.length ? columnas : ["Valor"])].forEach((c) => {
+                    const th = document.createElement("th");
+                    th.textContent = c;
+                    cabecera.append(th);
+                });
+                filas.forEach(([indice, fila]) => {
+                    const tr = tabla.insertRow();
+                    tr.insertCell().textContent = indice;
+                    if (columnas.length && fila && typeof fila === "object") {
+                        columnas.forEach((c) => { tr.insertCell().append(c in fila ? nodoValor(fila[c]) : ""); });
+                    } else {
+                        tr.insertCell().append(nodoValor(fila));
+                    }
+                });
+                const linea = document.createElement("div");
+                linea.className = "rn-linea";
+                linea.append(tabla);
+                salida.append(linea);
+            }
+
+            // ---------- Interceptar console (sigue funcionando en DevTools) ----------
+            const original = {};
+            ["log", "info", "warn", "error", "debug", "table", "clear", "time", "timeEnd"].forEach((m) => { original[m] = console[m].bind(console); });
+            console.log = (...a) => { original.log(...a); imprimir("", a); };
+            console.debug = (...a) => { original.debug(...a); imprimir("", a); };
+            console.info = (...a) => { original.info(...a); imprimir("rn-info", a); };
+            console.warn = (...a) => { original.warn(...a); imprimir("rn-warn", a); };
+            console.error = (...a) => { original.error(...a); imprimir("rn-error", a); };
+            console.table = (datos, ...resto) => { original.table(datos, ...resto); imprimirTabla(datos); };
+            console.clear = () => { original.clear(); salida.replaceChildren(); };
+            const tiempos = new Map();
+            console.time = (etiqueta = "default") => { tiempos.set(etiqueta, performance.now()); };
+            console.timeEnd = (etiqueta = "default") => {
+                const inicio = tiempos.get(etiqueta);
+                if (inicio === undefined) return;
+                tiempos.delete(etiqueta);
+                console.log(etiqueta + ": " + (performance.now() - inicio).toFixed(1) + " ms");
+            };
+
+            // ---------- Errores no capturados ----------
+            window.addEventListener("error", (e) => {
+                if (e.target && e.target.tagName === "SCRIPT") return; // lo maneja onerror del script
+                let texto = e.message;
+                if (texto === "Script error." || !texto) {
+                    texto = "Error en el archivo. Abre DevTools (F12 → Console) para ver el detalle y la línea.";
+                } else if (e.lineno) {
+                    texto += "  (línea " + e.lineno + ")";
+                }
+                imprimir("rn-error", ["❌ Uncaught " + texto]);
+            }, true);
+            window.addEventListener("unhandledrejection", (e) => {
+                const r = e.reason;
+                imprimir("rn-error", ["❌ Uncaught (in promise) " + (r && r.message ? r.name + ": " + r.message : String(r))]);
+            });
+
+            // ---------- Cargar el archivo elegido ----------
+            const avisos = $("rn-avisos");
+            function aviso(html) {
+                const div = document.createElement("div");
+                div.className = "rn-aviso";
+                div.innerHTML = html;
+                avisos.append(div);
+            }
+
+            if (!actual) {
+                $("rn-titulo").textContent = "Elige un archivo";
+                const bienvenida = document.createElement("div");
+                bienvenida.className = "rn-bienvenida";
+                bienvenida.innerHTML =
+                    "<p><strong>¿Cómo usar?</strong> Elige un archivo en la barra lateral. Lee el código en VS Code, " +
+                    "mira la salida aquí y resuelve los ejercicios del final de cada archivo.</p>" +
+                    "<p>Orden sugerido: <code>01-tipos</code> → <code>02-Dinamico</code> → … → <code>12-dom</code>. " +
+                    "Las soluciones están en <code>soluciones/</code>.</p>" +
+                    "<p>Si modificas un archivo, guarda y presiona <strong>↻ Recargar</strong>.</p>";
+                $("rn-tarjeta-app").hidden = false;
+                appDiv.append(bienvenida);
+                return;
+            }
+
+            document.title = actual.split("/").pop() + " · Práctica JS";
+            $("rn-titulo").textContent = actual;
+
+            const esModulo = /(^|\/)10-modulos\//.test(actual);
+            if (esModulo && location.protocol === "file:") {
+                aviso("⚠️ Los <strong>módulos</strong> (import/export) no funcionan abriendo el HTML con doble clic (file://). " +
+                    "En VS Code: clic derecho sobre <code>index.html</code> → <strong>Open with Live Server</strong>. " +
+                    "O en la terminal, dentro de la carpeta: <code>node main.js</code>.");
+            }
+
+            const script = document.createElement("script");
+            script.src = actual;
+            if (esModulo) script.type = "module";
+            script.onerror = () => {
+                imprimir("rn-error", ["❌ No se pudo cargar \"" + actual + "\". ¿La ruta es correcta?" + (esModulo ? " (Recuerda: módulos → Live Server)" : "")]);
+            };
+            document.body.append(script);
+        })();
+    </script>
+</body>
+</html>

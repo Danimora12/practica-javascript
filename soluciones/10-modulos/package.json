@@ -1,0 +1,6 @@
+{
+  "name": "practica-modulos",
+  "private": true,
+  "type": "module",
+  "description": "Permite ejecutar los módulos con Node: node main.js"
+}
